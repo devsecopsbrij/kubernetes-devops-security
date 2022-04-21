@@ -19,8 +19,7 @@ pipeline {
         }
       }
     }
-
-    stage('Docker Build and Push') {
+stage('Docker Build and Push') {
       steps {
         
           sh 'printenv'
