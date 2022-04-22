@@ -30,6 +30,7 @@ pipeline {
         }
       }
     }
+    
      stage('Sonar Qube - SAST') {
       steps {
        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://devsecops-demo-brij.westus2.cloudapp.azure.com:9000  -Dsonar.login=0394afab1ca29d78586fdf2ce125747ae6b9d9f8"
