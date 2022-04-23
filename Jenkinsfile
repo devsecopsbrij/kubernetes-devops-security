@@ -138,6 +138,14 @@ stage('Docker Build and Push') {
       }
     }
 
+ stage('OWASP ZAP - DAST') {
+      steps {
+        withKubeConfig([credentialsId: 'kubeconfig']) {
+          sh 'bash zap.sh'
+        }
+      }
+    }
+
   }
 
  post {
