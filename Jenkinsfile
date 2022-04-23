@@ -34,11 +34,15 @@ pipeline {
     stage('Docker Build and Push') {
       steps {
         echo "Docker Build and Push"
-	   // withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-         // sh 'printenv'
-          //sh 'docker build -t brijeshnk/numeric-app:""$GIT_COMMIT"" .'
-          //sh 'docker push brijeshnk/numeric-app:""$GIT_COMMIT""'
-      //  }
+	    withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          echo "After withDockerRegistry"
+          sh 'printenv'
+          echo "After printenv"
+          sh 'docker build -t brijeshnk/numeric-app:""$GIT_COMMIT"" .'
+           echo "After docker build"
+          sh 'docker push brijeshnk/numeric-app:""$GIT_COMMIT""'
+           echo "After docker push"
+        }
       }
     }
 
