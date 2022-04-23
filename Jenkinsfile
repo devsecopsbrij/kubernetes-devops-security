@@ -31,25 +31,20 @@ pipeline {
       
     }
     
-     stage('Sonar Qube - SAST') {
-      steps {
-        withSonarQubeEnv('SonarQube') {
-       sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://devsecops-demo-brij.westus2.cloudapp.azure.com:9000"
-        }
-         timeout(time: 2, unit: 'MINUTES') {
-          script {
-            waitForQualityGate abortPipeline: true
-          }
-        }
-      }
-    }
-
-    //  stage('Vulnerability Scan - Docker ') {
+    //  stage('Sonar Qube - SAST') {
     //   steps {
-    //     sh "mvn dependency-check:check"
+    //     withSonarQubeEnv('SonarQube') {
+    //    sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://devsecops-demo-brij.westus2.cloudapp.azure.com:9000"
+    //     }
+    //      timeout(time: 2, unit: 'MINUTES') {
+    //       script {
+    //         waitForQualityGate abortPipeline: true
+    //       }
+    //     }
     //   }
-      
     // }
+
+    
 
      stage('Vulnerability Scan - Docker') {
       steps {
@@ -93,17 +88,6 @@ stage('Docker Build and Push') {
         )
       }
     }
-
-/*      stage('Kubernetes Deployment - DEV') {
-      steps {
-        withKubeConfig([credentialsId: 'kubeconfig']) {
-          sh "sed -i 's#replace#brijeshnk/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
-          sh "kubectl apply -f k8s_deployment_service.yaml"
-        }
-      }
-    } */
-
-  
 
       stage('K8S Deployment - DEV') {
       steps {
