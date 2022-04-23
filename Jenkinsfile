@@ -34,10 +34,10 @@ pipeline {
     stage('Docker Build and Push') {
       steps {
         
-	    withDockerRegistry([credentialsId: "docker-hub1", url: ""]) {
+	    withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
-          sh 'sudo docker build -t brijeshk/numeric-app:""$GIT_COMMIT"" .'
-          sh 'docker push brijeshk/numeric-app:""$GIT_COMMIT""'
+          sh 'docker build -t brijeshnk/numeric-app:""$GIT_COMMIT"" .'
+          sh 'docker push brijeshnk/numeric-app:""$GIT_COMMIT""'
         }
       }
     }
