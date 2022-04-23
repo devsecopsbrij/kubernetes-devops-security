@@ -35,8 +35,10 @@ pipeline {
       steps {
         echo "Docker Build and Push"
 	    withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-          echo "After withDockerRegistry"
           sh 'printenv'
+          echo "After printenv"
+          echo "After withDockerRegistry"
+          
           echo "After printenv"
           sh 'docker build -t brijeshnk/numeric-app:""$GIT_COMMIT"" .'
            echo "After docker build"
