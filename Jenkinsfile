@@ -24,43 +24,43 @@ pipeline {
       
     }
 
-    // stage('Mutation Tests - PIT') {
-    //   steps {
-    //     sh "mvn org.pitest:pitest-maven:mutationCoverage"
-    //   }
+    stage('Mutation Tests - PIT') {
+      steps {
+        sh "mvn org.pitest:pitest-maven:mutationCoverage"
+      }
       
-    // }
+    }
     
-    //  stage('Sonar Qube - SAST') {
-    //   steps {
-    //     withSonarQubeEnv('SonarQube') {
-    //    sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://devsecops-demo-brij.westus2.cloudapp.azure.com:9000"
-    //     }
-    //      timeout(time: 2, unit: 'MINUTES') {
-    //       script {
-    //         waitForQualityGate abortPipeline: true
-    //       }
-    //     }
-    //   }
-    // }
+     stage('Sonar Qube - SAST') {
+      steps {
+        withSonarQubeEnv('SonarQube') {
+       sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://devsecops-demo-brij.westus2.cloudapp.azure.com:9000"
+        }
+         timeout(time: 2, unit: 'MINUTES') {
+          script {
+            waitForQualityGate abortPipeline: true
+          }
+        }
+      }
+    }
 
     
 
-    //  stage('Vulnerability Scan - Docker') {
-    //   steps {
-    //     parallel(
-    //       "Dependency Scan": {
-    //         sh "mvn dependency-check:check"
-    //       },
-    //       "Trivy Scan": {
-    //         sh "bash trivy-docker-image-scan.sh"
-    //       },
-    //       "OPA Conftest": {
-    //         sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego Dockerfile'
-    //       }
-    //     )
-    //   }
-    // }
+     stage('Vulnerability Scan - Docker') {
+      steps {
+        parallel(
+          "Dependency Scan": {
+            sh "mvn dependency-check:check"
+          },
+          "Trivy Scan": {
+            sh "bash trivy-docker-image-scan.sh"
+          },
+          "OPA Conftest": {
+            sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego Dockerfile'
+          }
+        )
+      }
+    }
 
 stage('Docker Build and Push') {
       steps {
@@ -73,21 +73,21 @@ stage('Docker Build and Push') {
       }
     }
 
-    // stage('Vulnerability Scan - Kubernetes') {
-    //   steps {
-    //     parallel(
-    //       "OPA Scan": {
-    //         sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
-    //       },
-    //       "Kubesec Scan": {
-    //         sh "bash kubesec-scan.sh"
-    //       },
-    //       "Trivy Scan": {
-    //         sh "bash trivy-k8s-scan.sh"
-    //       }
-    //     )
-    //   }
-    // }
+    stage('Vulnerability Scan - Kubernetes') {
+      steps {
+        parallel(
+          "OPA Scan": {
+            sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
+          },
+          "Kubesec Scan": {
+            sh "bash kubesec-scan.sh"
+          },
+          "Trivy Scan": {
+            sh "bash trivy-k8s-scan.sh"
+          }
+        )
+      }
+    }
 
       stage('K8S Deployment - DEV') {
       steps {
@@ -105,32 +105,32 @@ stage('Docker Build and Push') {
         )
       }
     }
-//    stage('Integration Tests - DEV') {
-//       steps {
-//         script {
-//           try {
-//             withKubeConfig([credentialsId: 'kubeconfig']) {
-//               sh "bash integration-test.sh"
-//             }
-//           } catch (e) {
-//             withKubeConfig([credentialsId: 'kubeconfig']) {
-//               sh "kubectl -n default rollout undo deploy ${deploymentName}"
-//             }
-//             throw e
-//           }
-//         }
-//       }
-//     }
+   stage('Integration Tests - DEV') {
+      steps {
+        script {
+          try {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "bash integration-test.sh"
+            }
+          } catch (e) {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "kubectl -n default rollout undo deploy ${deploymentName}"
+            }
+            throw e
+          }
+        }
+      }
+    }
 
-//  stage('OWASP ZAP - DAST') {
-//       steps {
-//         withKubeConfig([credentialsId: 'kubeconfig']) {
-//           sh 'bash zap.sh'
-//         }
-//       }
-//     }
+ stage('OWASP ZAP - DAST') {
+      steps {
+        withKubeConfig([credentialsId: 'kubeconfig']) {
+          sh 'bash zap.sh'
+        }
+      }
+    }
 
-//   }
+  }
 
  post {
     always {
