@@ -5,9 +5,9 @@
 
 sleep 60s
 
-rollback_status = 'kubectl -n default rollout status deploy ${deploymentName} --timeout 50s'
+#rollback_status = $(kubectl -n default rollout status deploy ${deploymentName} --timeout 50s)
 
-echo "Rollback status is ${rollback_status}"
+echo $(kubectl -n default rollout status deploy ${deploymentName} --timeout 50s)
 
 if [[ $(kubectl -n default rollout status deploy ${deploymentName} --timeout 50s) != *"successfully rolled out"* ]]; 
 then     
